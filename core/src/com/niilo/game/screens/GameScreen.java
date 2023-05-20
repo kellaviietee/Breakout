@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.niilo.game.BreakoutGame;
+import com.niilo.game.http.RequestSender;
 import com.niilo.game.objects.Ball;
 import com.niilo.game.objects.Block;
 import com.niilo.game.objects.Paddle;
@@ -52,6 +53,7 @@ public class GameScreen implements Screen {
             shape.end();
         } else {
             breakout.setScreen(new MainMenuScreen(breakout));
+            RequestSender.sendHighScore(100);
         }
     }
 
