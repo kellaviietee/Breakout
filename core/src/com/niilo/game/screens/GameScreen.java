@@ -95,6 +95,9 @@ public class GameScreen implements Screen {
                     i--;
                 }
             }
+            if (blocks.size() <= 66) {
+                isPaused = true;
+            }
         } else {
             isPaused = true;
         }
