@@ -22,9 +22,12 @@ public class GameScreen implements Screen {
     private final Paddle paddle = new Paddle(500, 10, 100, 15);
     private boolean isPaused = false;
 
-    public GameScreen(BreakoutGame breakout) {
+    private final String name;
+
+    public GameScreen(BreakoutGame breakout, String name) {
         this.breakout = breakout;
         this.shape = breakout.shape;
+        this.name = name;
         int blockWidth = 63;
         int blockHeight = 20;
         for (int y = Gdx.graphics.getHeight() / 2; y < Gdx.graphics.getHeight(); y += blockHeight + 10) {
@@ -53,7 +56,7 @@ public class GameScreen implements Screen {
             shape.end();
         } else {
             breakout.setScreen(new MainMenuScreen(breakout));
-            RequestSender.sendHighScore(100);
+            RequestSender.sendHighScore(100, name);
         }
     }
 

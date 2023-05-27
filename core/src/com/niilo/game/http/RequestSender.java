@@ -14,20 +14,14 @@ import java.util.List;
 
 public class RequestSender {
 
-    public static void sendHighScore(Integer score) {
+    public static void sendHighScore(Integer score, String name) {
         HttpClient httpClient = HttpClientBuilder.create().build();
-
         try {
             ObjectMapper objectMapper = new ObjectMapper();
-            Player player = new Player(1L, "Lauri");
+            Player player = new Player(1L, name);
             List<HighScore> highScores = new ArrayList<>();
             HighScore highScore = new HighScore(score, player);
             highScores.add(highScore);
-            for (int i = 2; i < 12; i++) {
-                Integer hiScore = i * 100;
-                HighScore highScore1 = new HighScore(hiScore, player);
-                highScores.add(highScore1);
-            }
             String requestBody = objectMapper.writeValueAsString(highScores);
             System.out.println(requestBody);
             HttpPut httpPut = new HttpPut("http://localhost:8080/api/highscore/addall");
