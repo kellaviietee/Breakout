@@ -3,38 +3,31 @@ package com.niilo.game.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.niilo.game.BreakoutGame;
-import com.niilo.game.http.RequestSender;
-import com.niilo.game.objects.Ball;
-import com.niilo.game.objects.Block;
-import com.niilo.game.objects.Paddle;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.niilo.game.actors.BreakoutActor;
 
 public class GameScreen implements Screen {
 
-    ShapeRenderer shape;
-    private final List<Block> blocks = new ArrayList<>();
-    private final BreakoutGame breakout;
-    private final Ball ball = new Ball(200, 200, 10, 5, 5);
-    private final Paddle paddle = new Paddle(500, 10, 100, 15);
-    private boolean isPaused = false;
+    private final Stage stage;
+    private final Label nameLabel;
 
-    private final String name;
+    private final Label scoreLabel;
 
-    public GameScreen(BreakoutGame breakout, String name) {
-        this.breakout = breakout;
-        this.shape = breakout.shape;
-        this.name = name;
-        int blockWidth = 63;
-        int blockHeight = 20;
-        for (int y = Gdx.graphics.getHeight() / 2; y < Gdx.graphics.getHeight(); y += blockHeight + 10) {
-            for (int x = 0; x < Gdx.graphics.getWidth(); x += blockWidth + 10) {
-                blocks.add(new Block(x, y, blockWidth, blockHeight));
-            }
-        }
+    public GameScreen(BreakoutGame breakout, String name, Skin skin) {
+        this.stage = new Stage(new ScreenViewport());
+        Gdx.input.setInputProcessor(stage);
+        nameLabel = new Label(name, skin);
+        scoreLabel = new Label("Score: 0", skin);
+        nameLabel.setPosition(10, Gdx.graphics.getHeight() - 30);
+        scoreLabel.setPosition(Gdx.graphics.getWidth() - 100, Gdx.graphics.getHeight() - 30);
+        BreakoutActor breakoutActor = new BreakoutActor(breakout, name, breakout.shape, nameLabel, scoreLabel);
+        stage.addActor(nameLabel);
+        stage.addActor(scoreLabel);
+        stage.addActor(breakoutActor);
     }
 
     @Override
@@ -44,20 +37,8 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        if (!isPaused) {
-            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-            shape.begin(ShapeRenderer.ShapeType.Filled);
-            ball.checkCollision(paddle);
-            paddle.draw(shape);
-            paddle.update(Gdx.input.getX());
-            ball.draw(shape);
-            ball.update();
-            collideWithBlocks();
-            shape.end();
-        } else {
-            breakout.setScreen(new MainMenuScreen(breakout));
-            RequestSender.sendHighScore(100, name);
-        }
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        stage.draw();
     }
 
     @Override
@@ -83,26 +64,5 @@ public class GameScreen implements Screen {
     @Override
     public void dispose() {
 
-    }
-
-    private void collideWithBlocks() {
-        if (!blocks.isEmpty()) {
-            for (Block block : blocks) {
-                block.draw(shape);
-                ball.checkCollision(block);
-            }
-            for (int i = 0; i < blocks.size(); i++) {
-                Block b = blocks.get(i);
-                if (b.isDestroyed()) {
-                    blocks.remove(b);
-                    i--;
-                }
-            }
-            if (blocks.size() <= 66) {
-                isPaused = true;
-            }
-        } else {
-            isPaused = true;
-        }
     }
 }

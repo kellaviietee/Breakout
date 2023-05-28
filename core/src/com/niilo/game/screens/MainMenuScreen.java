@@ -88,7 +88,7 @@ public class MainMenuScreen implements Screen {
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                breakout.setScreen(new GameScreen(breakout, nameField.getText()));
+                breakout.setScreen(new GameScreen(breakout, nameField.getText(), skin));
                 dispose();
             }
         });
