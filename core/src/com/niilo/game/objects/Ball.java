@@ -44,10 +44,12 @@ public class Ball {
         shape.circle(x, y, size);
     }
 
-    public void checkCollision(Paddle paddle) {
+    public boolean checkCollision(Paddle paddle) {
         if (collidesWith(paddle)) {
             reverseYSpeed();
+            return true;
         }
+        return false;
     }
 
     private boolean collidesWith(Paddle paddle) {
@@ -60,11 +62,13 @@ public class Ball {
         return horizontalCollision && verticalCollision;
     }
 
-    public void checkCollision(Block block) {
+    public boolean checkCollision(Block block) {
         if (collidesWith(block)) {
             ySpeed = -ySpeed;
             block.setDestroyed(true);
+            return true;
         }
+        return false;
     }
 
     private boolean collidesWith(Block block) {

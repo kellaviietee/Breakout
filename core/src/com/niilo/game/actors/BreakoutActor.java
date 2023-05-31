@@ -23,15 +23,16 @@ public class BreakoutActor extends Actor {
     private boolean isPaused = false;
     private final String name;
     private final ShapeRenderer shape;
-    private final Label nameLabel;
     private final Label scoreLabel;
     private final List<Block> blocks = new ArrayList<>();
 
-    public BreakoutActor(BreakoutGame breakout, String name, ShapeRenderer shape, Label nameLabel, Label scoreLabel) {
+    private int totalScore = 0;
+    private int breakingScore = 0;
+
+    public BreakoutActor(BreakoutGame breakout, String name, ShapeRenderer shape, Label scoreLabel) {
         this.breakout = breakout;
         this.name = name;
         this.shape = shape;
-        this.nameLabel = nameLabel;
         this.scoreLabel = scoreLabel;
         int blockWidth = 63;
         int blockHeight = 20;
@@ -47,7 +48,11 @@ public class BreakoutActor extends Actor {
         batch.end();
         if (!isPaused) {
             shape.begin(ShapeRenderer.ShapeType.Filled);
-            ball.checkCollision(paddle);
+            if (ball.checkCollision(paddle)) {
+                totalScore += breakingScore;
+                scoreLabel.setText("Score: " + totalScore);
+                breakingScore  = 0;
+            }
             paddle.draw(shape);
             paddle.update(Gdx.input.getX());
             ball.draw(shape);
@@ -56,7 +61,7 @@ public class BreakoutActor extends Actor {
             shape.end();
         } else {
             breakout.setScreen(new MainMenuScreen(breakout));
-            RequestSender.sendHighScore(100, name);
+            RequestSender.sendHighScore(totalScore, name);
         }
         batch.begin();
     }
@@ -70,7 +75,9 @@ public class BreakoutActor extends Actor {
         if (!blocks.isEmpty()) {
             for (Block block : blocks) {
                 block.draw(shape);
-                ball.checkCollision(block);
+                if (ball.checkCollision(block)) {
+                    breakingScore += 100;
+                }
             }
             for (int i = 0; i < blocks.size(); i++) {
                 Block b = blocks.get(i);
