@@ -26,9 +26,13 @@ public class Ball {
         if (x < size || x > Gdx.graphics.getWidth() - size) {
             reverseXSpeed();
         }
-        if (y < size || y > Gdx.graphics.getHeight() - size) {
+        if (collidedWithFloor() || y > Gdx.graphics.getHeight() - size) {
             reverseYSpeed();
         }
+    }
+
+    public boolean collidedWithFloor() {
+        return y < size;
     }
 
     private void reverseYSpeed() {

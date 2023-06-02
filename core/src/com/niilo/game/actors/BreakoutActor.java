@@ -47,23 +47,41 @@ public class BreakoutActor extends Actor {
     public void draw(Batch batch, float parentAlpha) {
         batch.end();
         if (!isPaused) {
-            shape.begin(ShapeRenderer.ShapeType.Filled);
-            if (ball.checkCollision(paddle)) {
-                totalScore += breakingScore;
-                scoreLabel.setText("Score: " + totalScore);
-                breakingScore  = 0;
-            }
-            paddle.draw(shape);
-            paddle.update(Gdx.input.getX());
-            ball.draw(shape);
-            ball.update();
-            collideWithBlocks();
-            shape.end();
+            gameLoop();
         } else {
-            breakout.setScreen(new MainMenuScreen(breakout));
-            RequestSender.sendHighScore(totalScore, name);
+            endGame();
         }
         batch.begin();
+    }
+
+    private void gameLoop() {
+        shape.begin(ShapeRenderer.ShapeType.Filled);
+        if (ball.checkCollision(paddle)) {
+            addScoreToPlayer();
+        } else if (ball.collidedWithFloor()) {
+            resetScore();
+        }
+        paddle.draw(shape);
+        paddle.update(Gdx.input.getX());
+        ball.draw(shape);
+        ball.update();
+        collideWithBlocks();
+        shape.end();
+    }
+
+    private void resetScore() {
+        breakingScore = 0;
+    }
+
+    private void addScoreToPlayer() {
+        totalScore += breakingScore;
+        scoreLabel.setText("Score: " + totalScore);
+        resetScore();
+    }
+
+    private void endGame() {
+        breakout.setScreen(new MainMenuScreen(breakout));
+        RequestSender.sendHighScore(totalScore, name);
     }
 
     @Override

@@ -24,7 +24,7 @@ public class GameScreen implements Screen {
         scoreLabel = new Label("Score: 0", skin);
         nameLabel.setPosition(10, Gdx.graphics.getHeight() - 30);
         scoreLabel.setPosition(Gdx.graphics.getWidth() - 100, Gdx.graphics.getHeight() - 30);
-        BreakoutActor breakoutActor = new BreakoutActor(breakout, name, breakout.shape, nameLabel, scoreLabel);
+        BreakoutActor breakoutActor = new BreakoutActor(breakout, name, breakout.shape, scoreLabel);
         stage.addActor(nameLabel);
         stage.addActor(scoreLabel);
         stage.addActor(breakoutActor);
